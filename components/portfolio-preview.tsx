@@ -23,47 +23,20 @@ interface PortfolioPreviewProps {
   projects: Project[]
 }
 
-const projectImages = [
-  '/projects/project1.jpg',
-  '/projects/project2.jpg',
-  '/projects/project3.jpg',
-  '/projects/project4.jpg'
-]
-
-const projectData = [
-  { title: 'Jewelry Campaign', client: 'Fashion Brand', tags: ['#jewelry', '#luxury', '#fashion'] },
-  { title: 'Family Moments', client: 'Private Client', tags: ['#family', '#travel', '#lifestyle'] },
-  { title: 'Summer Vibes', client: 'Music Artist', tags: ['#summer', '#beach', '#music'] },
-  { title: 'Cinematic Story', client: 'Production Co.', tags: ['#cinematic', '#mood', '#artistic'] }
-]
-
 export function PortfolioPreview({ projects }: PortfolioPreviewProps) {
   const projectList = Array.isArray(projects) ? projects : []
   const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({})
   
-  // Use real projects from database, with fallback to mock data for display only
-  const displayProjects = projectList.length > 0 
-    ? projectList.slice(0, 6).map((project, index) => ({
-        id: project.id,
-        title: project.title,
-        slug: project.slug,
-        client: project.client || projectData[index]?.client,
-        thumbnail: project.thumbnail || projectImages[index % projectImages.length],
-        tags: project.tags || projectData[index % projectData.length]?.tags,
-        isReal: true
-      }))
-    : projectData.map((data, index) => ({
-        id: `mock-${index}`,
-        title: data.title,
-        slug: '',
-        client: data.client,
-        thumbnail: projectImages[index],
-        tags: data.tags,
-        isReal: false
-      }))
+  // Only show real projects from database (max 6)
+  const displayProjects = projectList.slice(0, 6)
 
   const handleImageLoad = (index: number) => {
     setLoadedImages(prev => ({ ...prev, [index]: true }))
+  }
+
+  // If no projects, don't render the section
+  if (displayProjects.length === 0) {
+    return null
   }
 
   return (
@@ -94,59 +67,53 @@ export function PortfolioPreview({ projects }: PortfolioPreviewProps) {
 
         {/* Projects Grid - max 2 columns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-          {displayProjects.map((project, index) => {
-            const CardContent = (
-              <div className="group relative overflow-hidden rounded-2xl aspect-[4/3] sm:aspect-[16/10] bg-[#0D1321]/10">
-                <Image
-                  src={project.thumbnail || '/projects/project1.jpg'}
-                  alt={`${project.title} - Video per ${project.client} | Drugofiles Productions Pordenone`}
-                  fill
-                  priority={index < 2}
-                  sizes="(max-width: 640px) 100vw, 50vw"
-                  className={`object-cover transition-all duration-500 group-hover:scale-105 ${loadedImages[index] ? 'opacity-100' : 'opacity-0'}`}
-                  onLoad={() => handleImageLoad(index)}
-                />
-                
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1321]/80 via-[#0D1321]/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
+          {displayProjects.map((project, index) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ delay: index * 0.1, duration: 0.5 }}
+            >
+              <Link href={`/portfolio/${project.slug}`}>
+                <div className="group relative overflow-hidden rounded-2xl aspect-[4/3] sm:aspect-[16/10] bg-[#0D1321]/10">
+                  <Image
+                    src={project.thumbnail || '/projects/project1.jpg'}
+                    alt={`${project.title} - Video per ${project.client} | Drugofiles Productions Pordenone`}
+                    fill
+                    priority={index < 2}
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className={`object-cover transition-all duration-500 group-hover:scale-105 ${loadedImages[index] ? 'opacity-100' : 'opacity-0'}`}
+                    onLoad={() => handleImageLoad(index)}
+                  />
+                  
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D1321]/80 via-[#0D1321]/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
 
-                {/* Hashtags - bg #7353BA, text #FFF8F0 */}
-                <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                  {project.tags?.map((tag) => (
-                    <span key={tag} className="px-3 py-1 text-xs font-semibold bg-[#7353BA] text-[#FFF8F0] rounded-md shadow-sm">
-                      {tag}
-                    </span>
-                  ))}
+                  {/* Tags */}
+                  {project.tags && project.tags.length > 0 && (
+                    <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                      {project.tags.slice(0, 3).map((tag) => (
+                        <span key={tag} className="px-3 py-1 text-xs font-semibold bg-[#7353BA] text-[#FFF8F0] rounded-md shadow-sm">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Project info */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
+                    <p className="text-[#FFF8F0]/70 text-sm mb-1 font-medium">
+                      {project.client}
+                    </p>
+                    <h3 className="text-[#FFF8F0] text-xl sm:text-2xl lg:text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>
+                      {project.title}
+                    </h3>
+                  </div>
                 </div>
-
-                {/* Project info - text #FFF8F0 */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
-                  <p className="text-[#FFF8F0]/70 text-sm mb-1 font-medium">
-                    {project.client}
-                  </p>
-                  <h3 className="text-[#FFF8F0] text-xl sm:text-2xl lg:text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>
-                    {project.title}
-                  </h3>
-                </div>
-              </div>
-            )
-
-            return (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-              >
-                {project.isReal ? (
-                  <Link href={`/portfolio/${project.slug}`}>{CardContent}</Link>
-                ) : (
-                  CardContent
-                )}
-              </motion.div>
-            )
-          })}
+              </Link>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

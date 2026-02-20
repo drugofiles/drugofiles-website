@@ -4,17 +4,21 @@ import { ShowreelSection } from '@/components/showreel-section'
 import { PortfolioPreview } from '@/components/portfolio-preview'
 import { CTASection } from '@/components/cta-section'
 import { PageWrapper } from '@/components/page-wrapper'
+import { prisma } from '@/lib/db'
+
+export const dynamic = "force-dynamic"
 
 async function getFeaturedProjects() {
   try {
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
-    const res = await fetch(`${baseUrl}/api/projects?featured=true&limit=6`, {
-      cache: 'no-store'
+    const projects = await prisma.project.findMany({
+      where: { featured: true },
+      include: { macroArea: true },
+      orderBy: { createdAt: 'asc' },
+      take: 6,
     })
-    if (!res.ok) return []
-    const data = await res.json()
-    return data.projects || []
-  } catch {
+    return projects
+  } catch (error) {
+    console.error('Error fetching featured projects:', error)
     return []
   }
 }
