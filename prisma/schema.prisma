@@ -1,0 +1,111 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum MacroAreaType {
+  BRAND_CAMPAIGNS
+  ENTERTAINMENT_MUSIC
+  PRIVATE_STORIES
+}
+
+model MacroArea {
+  id          String         @id @default(cuid())
+  name        String         @unique
+  slug        String         @unique
+  type        MacroAreaType  @unique
+  title       String
+  description String         @db.Text
+  thumbnail   String
+  order       Int
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  projects    Project[]
+  caseStudies CaseStudy[]
+}
+
+model ClientLogo {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  logoUrl   String
+  website   String?
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id            String     @id @default(cuid())
+  title         String
+  slug          String     @unique
+  description   String     @db.Text
+  tagline       String?
+  thumbnail     String
+  videoUrl      String?
+  localVideo    String?
+  galleryImages String[]
+  tags          String[]
+  year          Int
+  client        String?
+  featured      Boolean    @default(false)
+  macroAreaId   String
+  macroArea     MacroArea  @relation(fields: [macroAreaId], references: [id], onDelete: Cascade)
+  objective       String?    @db.Text
+  results         String?    @db.Text
+  mockupVideos    String[]
+  viewsBefore     Int?
+  viewsAfter      Int?
+  subsBefore      Int?
+  subsAfter       Int?
+  objectiveMedia    String[]
+  descriptionMedia  String[]
+  resultMedia       String[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([macroAreaId])
+  @@index([featured])
+}
+
+model CaseStudy {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  client      String
+  challenge   String    @db.Text
+  solution    String    @db.Text
+  results     String    @db.Text
+  thumbnail   String
+  images      String[]
+  tags        String[]
+  year        Int
+  featured    Boolean   @default(false)
+  macroAreaId String
+  macroArea   MacroArea @relation(fields: [macroAreaId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([macroAreaId])
+  @@index([featured])
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  message   String   @db.Text
+  service   String?
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([status])
+  @@index([createdAt])
+}
