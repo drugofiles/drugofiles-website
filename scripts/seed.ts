@@ -35,6 +35,7 @@ const macroAreas = [
   }
 ];
 
+async function main() {
   await prisma.caseStudy.deleteMany()
   await prisma.project.deleteMany()
   await prisma.clientLogo.deleteMany()

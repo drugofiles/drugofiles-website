@@ -1,5 +1,17 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import nodemailer from 'nodemailer'
+
+// Create Zoho SMTP transporter
+const transporter = nodemailer.createTransport({
+  host: 'smtp.zoho.eu',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
+  },
+})
 
 export async function POST(request: Request) {
   try {
@@ -25,10 +37,9 @@ export async function POST(request: Request) {
       },
     })
 
-    // Send email notification if requested
+    // Send email notification
     if (sendEmail) {
       try {
-        // Create HTML email body
         const htmlBody = `
           <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #dedacf; padding: 40px;">
             <div style="background: #0D1321; padding: 30px; border-radius: 16px;">
@@ -59,31 +70,18 @@ export async function POST(request: Request) {
           </div>
         `
 
-        const appUrl = process.env.NEXTAUTH_URL || 'https://drugofiles.com'
-
-        const response = await fetch('https://apps.abacus.ai/api/sendNotificationEmail', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            deployment_token: process.env.ABACUSAI_API_KEY,
-            app_id: process.env.WEB_APP_ID,
-            notification_id: process.env.NOTIF_ID_CONTACT_FORM_SUBMISSION,
-            subject: `[Drugofiles] Nuova richiesta da ${name}`,
-            body: htmlBody,
-            is_html: true,
-            recipient_email: 'mishaciauzer@gmail.com',
-            sender_email: `noreply@${new URL(appUrl).hostname}`,
-            sender_alias: 'Drugofiles Productions',
-          }),
+        await transporter.sendMail({
+          from: `"Drugofiles Productions" <${process.env.SMTP_USER}>`,
+          to: process.env.CONTACT_EMAIL || 'info@drugofiles.com',
+          replyTo: email,
+          subject: `[Drugofiles] Nuova richiesta da ${name}`,
+          html: htmlBody,
         })
 
-        const result = await response.json()
-        if (!result.success && !result.notification_disabled) {
-          console.error('Email notification failed:', result.message)
-        }
+        console.log('Email sent successfully to', process.env.CONTACT_EMAIL)
       } catch (emailError) {
-        // Log email error but don't fail the request
         console.error('Email sending failed:', emailError)
+        // Don't fail the request if email fails
       }
     }
 
