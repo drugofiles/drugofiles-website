@@ -33,6 +33,7 @@ import Link from 'next/link'
 import { ProjectHero } from '@/components/project-hero'
 import { StatsChart } from '@/components/stats-chart'
 import { AnimatedStat } from '@/components/animated-stat'
+import { MediaGallery } from '@/components/media-gallery'
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
@@ -190,38 +191,8 @@ function isImageFile(path: string): boolean {
   return imageExtensions.some(ext => path.toLowerCase().endsWith(ext))
 }
 
-// Smartphone mockup for vertical videos OR images in gallery
-function SmartphoneMockup({ src, title, index }: { src: string; title: string; index: number }) {
-  const isImage = isImageFile(src)
-  const altText = `${title} - Contenuto social verticale ${index + 1} | Reel video produzione Drugofiles Pordenone`
-  
-  return (
-    <div className="relative bg-[#1a1a2e] rounded-[2.5rem] p-2 shadow-2xl">
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 w-20 h-6 bg-[#0D1321] rounded-full z-10" />
-      <div className="relative w-[200px] sm:w-[220px] h-[430px] sm:h-[470px] rounded-[2rem] overflow-hidden bg-black">
-        {isImage ? (
-          <Image
-            src={src}
-            alt={altText}
-            fill
-            sizes="220px"
-            className="object-cover"
-          />
-        ) : (
-          <video
-            src={src}
-            className="w-full h-full object-cover"
-            loop
-            muted
-            playsInline
-            autoPlay
-            aria-label={altText}
-          />
-        )}
-      </div>
-    </div>
-  )
-}
+// Social mockup component is now imported from '@/components/social-mockup'
+// Supports: _ig (Instagram), _tiktok (TikTok), _fb (Facebook), or generic smartphone mockup
 
 export default async function ProjectPage({ params }: PageProps) {
   const project = await prisma.project.findUnique({
@@ -376,7 +347,7 @@ export default async function ProjectPage({ params }: PageProps) {
                 )}
                 {hasObjectiveMedia && (
                   <div className={`flex justify-center ${objectiveMediaHasVertical ? 'lg:w-[300px]' : project.objective ? '' : 'max-w-2xl'}`}>
-                    {project.objectiveMedia!.map((item: string, idx: number) => (
+                    {project.objectiveMedia!.map((item, idx) => (
                       <OrganicMediaItem key={idx} item={item} projectTitle={project.title} index={idx} section="Obiettivo" />
                     ))}
                   </div>
@@ -401,7 +372,7 @@ export default async function ProjectPage({ params }: PageProps) {
               }`}>
                 {hasDescriptionMedia && (
                   <div className={`flex justify-center ${project.description ? 'order-2 lg:order-1' : ''} ${descriptionMediaHasVertical ? 'lg:w-[300px]' : project.description ? '' : 'max-w-2xl'}`}>
-                    {project.descriptionMedia!.map((item: string, idx: number) => (
+                    {project.descriptionMedia!.map((item, idx) => (
                       <OrganicMediaItem key={idx} item={item} projectTitle={project.title} index={idx} section="Il Progetto" />
                     ))}
                   </div>
@@ -460,7 +431,7 @@ export default async function ProjectPage({ params }: PageProps) {
                     )}
                     {hasResultMedia && (
                       <div className="flex justify-center lg:w-[300px]">
-                        {project.resultMedia!.map((item: string, idx: number) => (
+                        {project.resultMedia!.map((item, idx) => (
                           <OrganicMediaItem key={idx} item={item} projectTitle={project.title} index={idx} section="Risultati" />
                         ))}
                       </div>
@@ -501,7 +472,7 @@ export default async function ProjectPage({ params }: PageProps) {
                   </div>
                   {/* Horizontal media below */}
                   <div className="w-full max-w-4xl mx-auto">
-                    {project.resultMedia!.map((item: string, idx: number) => (
+                    {project.resultMedia!.map((item, idx) => (
                       <OrganicMediaItem key={idx} item={item} projectTitle={project.title} index={idx} section="Risultati" />
                     ))}
                   </div>
@@ -552,7 +523,7 @@ export default async function ProjectPage({ params }: PageProps) {
                     </div>
                   )}
                   <div className={`flex justify-center ${resultMediaHasVertical ? 'lg:w-[300px]' : ''}`}>
-                    {project.resultMedia!.map((item: string, idx: number) => (
+                    {project.resultMedia!.map((item, idx) => (
                       <OrganicMediaItem key={idx} item={item} projectTitle={project.title} index={idx} section="Risultati" />
                     ))}
                   </div>
@@ -572,32 +543,21 @@ export default async function ProjectPage({ params }: PageProps) {
           </section>
         )}
 
-        {/* Vertical Media in Smartphone Mockups - from mockupVideos field */}
-        {/* NOTE: Can contain videos (.mp4) OR images (.png/.jpg) */}
-        {/* If name contains "Video" → it's a video, otherwise it's an image (usually PNG screenshot) */}
+        {/* Vertical Media Gallery - from mockupVideos field */}
+        {/* Click to open fullscreen lightbox */}
         {project.mockupVideos && project.mockupVideos.length > 0 && (
           <section className="bg-[#0D1321] py-16 sm:py-24">
             <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
-              <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
-                {project.mockupVideos.map((item: string, index: number) => {
-                  // Determine if it's a video or image based on naming
+              <MediaGallery 
+                items={project.mockupVideos.map(item => {
                   const isVideo = isVideoItem(item)
-                  let mediaPath: string
-                  
-                  if (item.startsWith('/')) {
-                    mediaPath = item
-                  } else if (item.includes('.')) {
-                    // Has extension - put in correct folder
-                    mediaPath = isVideo ? `/videos/${item}` : `/projects/${item}`
-                  } else {
-                    // No extension - determine type and add appropriate extension
-                    mediaPath = isVideo ? `/videos/${item}.mp4` : `/projects/${item}.png`
-                  }
-                  return (
-                    <SmartphoneMockup key={index} src={mediaPath} title={project.title} index={index} />
-                  )
+                  if (item.startsWith('/')) return item
+                  if (item.includes('.')) return isVideo ? `/videos/${item}` : `/projects/${item}`
+                  return isVideo ? `/videos/${item}.mp4` : `/projects/${item}.png`
                 })}
-              </div>
+                title={project.title}
+                basePath=""
+              />
             </div>
           </section>
         )}
@@ -607,16 +567,26 @@ export default async function ProjectPage({ params }: PageProps) {
           <section className="bg-[#dedacf] py-12 sm:py-16">
             <div className="max-w-[1800px] mx-auto px-4 sm:px-6">
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                {project.galleryImages.map((item: string, index: number) => {
+                {project.galleryImages.map((item, index) => {
                   const isVertical = isVerticalFile(item)
                   const isVideo = isVideoItem(item)
                   const itemPath = getMediaPath(item)
                   
-                  // Vertical videos → smartphone mockup
+                  // Vertical videos → tall card (9:16 aspect)
                   if (isVideo && isVertical) {
                     return (
-                      <div key={index} className="col-span-1 row-span-2 flex justify-center items-center py-4">
-                        <SmartphoneMockup src={itemPath} title={project.title} index={index} />
+                      <div key={index} className="group relative rounded-xl overflow-hidden cursor-pointer row-span-2 bg-[#0D1321]/10">
+                        <div className="relative aspect-[9/16]">
+                          <video
+                            src={itemPath}
+                            className="w-full h-full object-cover"
+                            loop
+                            muted
+                            playsInline
+                            autoPlay
+                          />
+                          <div className="absolute inset-0 bg-[#0D1321]/0 group-hover:bg-[#0D1321]/20 transition-colors duration-300" />
+                        </div>
                       </div>
                     )
                   }

@@ -174,7 +174,7 @@ async function main() {
       objectiveMedia: ['MNLVideo2-v'],
       descriptionMedia: ['MNLVideo3-v'],
       resultMedia: ['MNLVideo4-v'],
-      mockupVideos: ['MNL1-v', 'MNL2-v', 'MNL3-v', 'MNL4-v'],
+      mockupVideos: ['MNL1-v.png', 'MNL2-v.png', 'MNL3-v.png', 'MNL4-v.png'],
       tags: ['Branding', 'Cars', 'MNL'],
       featured: true,
       macroAreaId: commercialArea!.id,
