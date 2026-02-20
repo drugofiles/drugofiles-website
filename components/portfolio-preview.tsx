@@ -9,14 +9,14 @@ interface Project {
   id: string
   title: string
   slug: string
-  client?: string
-  description?: string
+  client?: string | null
+  description?: string | null
   thumbnail?: string | null
-  tags?: string[]
+  tags?: string[] | null
   macroArea?: {
     name: string
     slug: string
-  }
+  } | null
 }
 
 interface PortfolioPreviewProps {
@@ -91,7 +91,7 @@ export function PortfolioPreview({ projects }: PortfolioPreviewProps) {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0D1321]/80 via-[#0D1321]/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
 
                   {/* Tags */}
-                  {project.tags && project.tags.length > 0 && (
+                  {project.tags && Array.isArray(project.tags) && project.tags.length > 0 && (
                     <div className="absolute top-4 left-4 flex flex-wrap gap-2">
                       {project.tags.slice(0, 3).map((tag) => (
                         <span key={tag} className="px-3 py-1 text-xs font-semibold bg-[#7353BA] text-[#FFF8F0] rounded-md shadow-sm">
@@ -103,9 +103,11 @@ export function PortfolioPreview({ projects }: PortfolioPreviewProps) {
 
                   {/* Project info */}
                   <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
-                    <p className="text-[#FFF8F0]/70 text-sm mb-1 font-medium">
-                      {project.client}
-                    </p>
+                    {project.client && (
+                      <p className="text-[#FFF8F0]/70 text-sm mb-1 font-medium">
+                        {project.client}
+                      </p>
+                    )}
                     <h3 className="text-[#FFF8F0] text-xl sm:text-2xl lg:text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>
                       {project.title}
                     </h3>
