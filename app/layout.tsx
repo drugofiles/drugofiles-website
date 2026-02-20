@@ -4,6 +4,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { GoogleAnalytics } from '@/components/google-analytics'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { TranslateFix } from '@/components/translate-fix'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' })
@@ -191,6 +192,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
+        <TranslateFix />
         <GoogleAnalytics />
         <ThemeProvider
           attribute="class"
