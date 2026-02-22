@@ -34,6 +34,7 @@ import { ProjectHero } from '@/components/project-hero'
 import { StatsChart } from '@/components/stats-chart'
 import { AnimatedStat } from '@/components/animated-stat'
 import { MediaGallery } from '@/components/media-gallery'
+import { GalleryWithLightbox } from '@/components/gallery-with-lightbox'
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
@@ -562,88 +563,15 @@ export default async function ProjectPage({ params }: PageProps) {
           </section>
         )}
 
-        {/* Gallery Section - Uses same media rules as above */}
+        {/* Gallery Section - Click to open fullscreen */}
         {project.galleryImages && project.galleryImages.length > 0 && (
           <section className="bg-[#dedacf] py-12 sm:py-16">
             <div className="max-w-[1800px] mx-auto px-4 sm:px-6">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                {project.galleryImages.map((item, index) => {
-                  const isVertical = isVerticalFile(item)
-                  const isVideo = isVideoItem(item)
-                  const itemPath = getMediaPath(item)
-                  
-                  // Vertical videos → tall card (9:16 aspect)
-                  if (isVideo && isVertical) {
-                    return (
-                      <div key={index} className="group relative rounded-xl overflow-hidden cursor-pointer row-span-2 bg-[#0D1321]/10">
-                        <div className="relative aspect-[9/16]">
-                          <video
-                            src={itemPath}
-                            className="w-full h-full object-cover"
-                            loop
-                            muted
-                            playsInline
-                            autoPlay
-                          />
-                          <div className="absolute inset-0 bg-[#0D1321]/0 group-hover:bg-[#0D1321]/20 transition-colors duration-300" />
-                        </div>
-                      </div>
-                    )
-                  }
-                  
-                  // Vertical images → tall card with hover (9:16 aspect)
-                  if (isVertical) {
-                    return (
-                      <div key={index} className="group relative rounded-xl overflow-hidden cursor-pointer row-span-2 bg-[#0D1321]/10">
-                        <div className="relative aspect-[9/16]">
-                          <Image
-                            src={itemPath}
-                            alt={`${project.title} - Gallery immagine verticale ${index + 1} | Video produzione ${project.client} Drugofiles Pordenone`}
-                            fill
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                            className="object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                          <div className="absolute inset-0 bg-[#0D1321]/0 group-hover:bg-[#0D1321]/20 transition-colors duration-300" />
-                        </div>
-                      </div>
-                    )
-                  }
-                  
-                  // Horizontal videos → standard video player (16:9 aspect)
-                  if (isVideo) {
-                    return (
-                      <div key={index} className="relative rounded-xl overflow-hidden">
-                        <div className="relative aspect-video">
-                          <video
-                            src={itemPath}
-                            className="w-full h-full object-cover"
-                            loop
-                            muted
-                            playsInline
-                            autoPlay
-                          />
-                        </div>
-                      </div>
-                    )
-                  }
-                  
-                  // Horizontal images → standard card with hover (16:9 aspect)
-                  return (
-                    <div key={index} className="group relative rounded-xl overflow-hidden cursor-pointer bg-[#0D1321]/10">
-                      <div className="relative aspect-video">
-                        <Image
-                          src={itemPath}
-                          alt={`${project.title} - Gallery immagine ${index + 1} | Video produzione ${project.client} Drugofiles Pordenone`}
-                          fill
-                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-[#0D1321]/0 group-hover:bg-[#0D1321]/20 transition-colors duration-300" />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
+              <GalleryWithLightbox 
+                items={project.galleryImages}
+                title={project.title}
+                client={project.client}
+              />
             </div>
           </section>
         )}
