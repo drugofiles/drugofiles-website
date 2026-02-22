@@ -224,7 +224,7 @@ async function main() {
       year: 2026,
       tagline: 'Yo ma chi sei? Sono Wisee bro!',
       thumbnail: '/projects/Wisee1.jpg',
-      mockupVideos: ['WiseeVideo1_V'],
+      mockupVideos: [],
       objective: "L'obbiettivo principale del progetto musicale, non era solo la musica, ma l'aumento del pubblico. Video verticali, strutturati appositamente per colpire il pubblico target e andare virali.",
       description: 'Giovane rapper di Spilimbergo conquista il friuli con una serie di video virali. Il progetto strutturato in modo semplice ed efficiente.',
       results: "Milioni di views e decine di migliaia di followers, senza neanche un euro speso in promozione. Tutto questo già nei primi 2 mesi dall'inizio del progetto.",
