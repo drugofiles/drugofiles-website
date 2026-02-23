@@ -15,20 +15,16 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const startTimeRef = useRef(Date.now())
 
   useEffect(() => {
-    // Preload images
+    // Preload only essential images (reduced list for faster loading)
     const imagesToPreload = [
       '/services/commercial.jpg',
       '/services/entertainment.jpg',
       '/services/premium.jpg',
-      '/projects/project1.jpg',
-      '/projects/project2.jpg',
-      '/projects/project3.jpg',
-      '/projects/project4.jpg',
     ]
 
     let loadedCount = 0
     const totalImages = imagesToPreload.length
-    const minDuration = 1800 // 1.8 seconds minimum
+    const minDuration = 500 // 0.5 seconds minimum - faster experience
     startTimeRef.current = Date.now()
 
     // Preload each image
