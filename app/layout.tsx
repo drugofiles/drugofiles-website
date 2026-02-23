@@ -42,11 +42,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Drugofiles Productions | Video Produzione Pordenone',
     description: 'Agenzia video produzione a Pordenone. Spot pubblicitari, video aziendali, contenuti social per il Nord Est Italia.',
-    url: 'https://drugofiles.com',
+    url: 'https://www.drugofiles.com',
     siteName: 'Drugofiles Productions',
     images: [
       {
-        url: 'https://drugofiles.com/og-image.png',
+        url: 'https://www.drugofiles.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Drugofiles Productions - Video Produzione Pordenone',
