@@ -4,6 +4,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { GoogleAnalytics } from '@/components/google-analytics'
 import { CookieBanner } from '@/components/cookie-banner'
+import { CookieSettingsButton } from '@/components/cookie-settings-button'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { TranslateFix } from '@/components/translate-fix'
 
@@ -215,6 +216,7 @@ export default function RootLayout({
             {children}
           </ErrorBoundary>
           <CookieBanner />
+          <CookieSettingsButton />
         </ThemeProvider>
       </body>
     </html>
