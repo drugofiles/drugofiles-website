@@ -26,7 +26,7 @@ const services = [
     title: 'Premium',
     subtitle: 'Private Stories',
     description: 'Matrimoni, battesimi, eventi privati esclusivi.',
-    image: '/services/premium.jpg',
+    image: '/services/premium.jpg?v=2',
     tags: ['#wedding', '#exclusive', '#memories', '#luxury']
   }
 ]

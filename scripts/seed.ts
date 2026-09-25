@@ -436,6 +436,25 @@ async function main() {
       featured: true,
       macroAreaId: entertainmentArea!.id,
     },
+    // 20. Battesimo Noah Tommaso (Premium, Featured)
+    {
+      title: 'Battesimo Noah Tommaso',
+      slug: 'NoahTommaso',
+      client: 'Genitori di Noah',
+      year: 2026,
+      tagline: 'Famiglia di Noah Tommaso',
+      thumbnail: '/projects/Noah2.jpg',
+      localVideo: '/videos/NoahVideo1.mp4',
+      objective: "L'obiettivo era realizzare contenuti video per conservare il ricordo del giorno speciale della famiglia e condividerne i momenti più significativi con gli amici, attraverso formati brevi.",
+      description: 'Con questo pacchetto di video cinematografici abbiamo documentato la preparazione, la cerimonia in chiesa e la festa del giorno del battesimo di Noah Tommaso, il tutto avvolto dall\'amore familiare.',
+      results: 'La famiglia di Noah ha ricevuto il film completo della giornata, della durata di 24 minuti e caratterizzato da un montaggio dolce e fluido, oltre a un trailer riepilogativo di 3 minuti e a un breve trailer verticale pensato per i social.',
+      objectiveMedia: ['NoahVideo2'],
+      descriptionMedia: ['NoahVideo3'],
+      resultMedia: ['Noah1'],
+      tags: ['battesimo', 'cinematic', 'film'],
+      featured: true,
+      macroAreaId: premiumArea!.id,
+    },
   ]
 
   // Create projects sequentially to maintain order

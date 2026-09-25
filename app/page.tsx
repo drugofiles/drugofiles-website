@@ -14,7 +14,6 @@ async function getFeaturedProjects() {
       where: { featured: true },
       include: { macroArea: true },
       orderBy: { createdAt: 'asc' },
-      take: 6,
     })
     return projects
   } catch (error) {

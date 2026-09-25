@@ -27,8 +27,8 @@ export function PortfolioPreview({ projects }: PortfolioPreviewProps) {
   const projectList = Array.isArray(projects) ? projects : []
   const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({})
   
-  // Only show real projects from database (max 6)
-  const displayProjects = projectList.slice(0, 6)
+  // Show all featured projects from database
+  const displayProjects = projectList
 
   const handleImageLoad = (index: number) => {
     setLoadedImages(prev => ({ ...prev, [index]: true }))
